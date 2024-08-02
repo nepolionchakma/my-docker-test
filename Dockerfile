@@ -11,7 +11,8 @@ RUN apt-get -y update && \
     | tar xzC /usr/local/bin && \
     apt-get purge --auto-remove -y curl && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists*
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN echo 'root:root' | chpasswd
 
 
 COPY /run_gotty.sh /run_gotty.sh
