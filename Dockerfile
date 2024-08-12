@@ -20,7 +20,7 @@ RUN apt-get update && \
 RUN echo 'root:root' | chpasswd
 
 # Expose SSH port
-EXPOSE 3333
+EXPOSE 22
 
 # Start SSH service
 CMD ["/usr/sbin/sshd", "-D"]
