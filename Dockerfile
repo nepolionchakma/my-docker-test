@@ -14,10 +14,24 @@ RUN apt-get update && \
     curl \
     wget \
     ssh \
-    openssh-server
+    openssh-server \
+    passwd
 
-# Set up the root user password
-RUN echo 'root:root' | chpasswd
+# Create a group 'admin' and add users to this group
+RUN groupadd admin && \
+    useradd -m -G admin -s /bin/bash web && \
+    useradd -m -G admin -s /bin/bash app && \
+    useradd -m -G admin -s /bin/bash dbs && \
+    useradd -m -G admin -s /bin/bash def
+
+# Set passwords for the users
+RUN echo "web:webpassword" | chpasswd && \
+    echo "app:apppassword" | chpasswd && \
+    echo "dbs:dbspassword" | chpasswd && \
+    echo "def:defpassword" | chpasswd
+
+# Add all users to sudoers with no password required
+RUN echo "%admin ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Expose SSH port
 EXPOSE 22
