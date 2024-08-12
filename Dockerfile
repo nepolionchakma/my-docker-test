@@ -1,27 +1,22 @@
-# Use an Ubuntu base image
-FROM ubuntu:latest
+# Use an official Ubuntu as a parent image
+FROM ubuntu:20.04
 
-# Set root password
-RUN echo 'root:root' | chpasswd
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Install necessary packages
-RUN apt-get update && apt-get install -y \
-    sudo \
-    openssh-server \
-    nano \
-    vim
+RUN apt-get update && \
+    apt-get install -y sudo \
+                       openssh-server \
+                       vim \
+                       curl
 
-# Create a directory for the SSH service
-RUN mkdir -p /run/sshd
+# Create a user and set up a password (in this example, we're using "root" for simplicity)
+RUN useradd -ms /bin/bash user && \
+    echo 'user:root' | chpasswd
 
-# Enable root login via SSH
-RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-
-# Allow root login with password
-RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
-
-# Expose SSH port
+# Expose the SSH port
 EXPOSE 22
 
-# Start SSH service
+# Start the SSH service
 CMD ["/usr/sbin/sshd", "-D"]
