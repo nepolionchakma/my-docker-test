@@ -1,23 +1,24 @@
-# Use an official Ubuntu as a parent image
+# Use an Ubuntu base image
 FROM ubuntu:latest
 
-# Set environment variables
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Update and install basic packages
-RUN apt-get update && \
-    apt-get install -y \
-    sudo \
-    vim \
-    net-tools \
-    iputils-ping \
-    curl \
-    wget \
-    ssh \
-    openssh-server
-
-# Set up the root user password
+# Set root password
 RUN echo 'root:root' | chpasswd
+
+# Install necessary packages
+RUN apt-get update && apt-get install -y \
+    sudo \
+    openssh-server \
+    nano \
+    vim
+
+# Create a directory for the SSH service
+RUN mkdir /var/run/sshd
+
+# Enable root login via SSH
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+# Allow root login with password
+RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
 
 # Expose SSH port
 EXPOSE 22
