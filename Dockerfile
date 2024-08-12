@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     vim
 
 # Create a directory for the SSH service
-RUN mkdir /var/run/sshd
+RUN mkdir -p /run/sshd
 
 # Enable root login via SSH
 RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
